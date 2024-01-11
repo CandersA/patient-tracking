@@ -1,12 +1,13 @@
 {
-  "name": "typescript-flight-diaries",
+  "name": "typescript-patient-tracking",
   "version": "1.0.0",
   "description": "",
   "main": "index.ts",
   "scripts": {
     "tsc": "tsc",
     "dev": "ts-node-dev index.ts",
-    "lint": "eslint --ext .ts ."
+    "lint": "eslint --ext .ts .",
+    "start": "node build/index.js"
   },
   "author": "",
   "license": "ISC",
