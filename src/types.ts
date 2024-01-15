@@ -42,6 +42,8 @@ interface BaseEntry {
     diagnosisCodes?: Array<Diagnosis['code']>;
 }
 
+export type BaseEntryWithoutId = Omit<BaseEntry, 'id'>;
+
 export enum HealthCheckRating {
     "Healthy" = 0,
     "LowRisk" = 1,
@@ -59,7 +61,7 @@ interface SickLeave {
     endDate: string;
 }
 
-interface Discharge {
+export interface Discharge {
     date: string;
     criteria: string;
 }
