@@ -11,6 +11,16 @@ const getPatients = (): WithoutSsnPatient[] => {
         occupation
     }));
 };
+
+const getPatient = (id: string): Patient | undefined => {
+    let patient = patientData.find(patient => patient.id == id);
+
+    if (patient && !patient.entries) {
+        patient = {...patient, entries: []};
+    }
+
+    return patient;
+};
   
 const addPatient = ( newPatient: NewPatient ): Patient => {
 
@@ -27,5 +37,6 @@ const addPatient = ( newPatient: NewPatient ): Patient => {
   
 export default {
     getPatients,
+    getPatient,
     addPatient
 };
