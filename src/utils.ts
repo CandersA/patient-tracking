@@ -2,7 +2,8 @@ import {
     NewPatient, 
     Gender, 
     EntryWithoutId, 
-    Discharge, 
+    Discharge,
+    SickLeave,
     BaseEntryWithoutId, 
     Diagnosis, 
     HealthCheckRating
@@ -32,12 +33,26 @@ const isDischarge = (discharge: unknown): discharge is Discharge => {
     return Object.prototype.hasOwnProperty.call(discharge, "date") && Object.prototype.hasOwnProperty.call(discharge, "criteria");
 };
 
+const isSickLeave = (sickLeave: unknown): sickLeave is SickLeave => {
+    return Object.prototype.hasOwnProperty.call(sickLeave, "startDate") && Object.prototype.hasOwnProperty.call(sickLeave, "endDate");
+};
+
 const parseDischarge = (discharge: unknown): Discharge => {
 
     if (isDischarge(discharge)) {
         return discharge;
     } else {
         throw new Error('Incorrect or missing discharge: ' + discharge);
+    }
+
+};
+
+const parseSickLeave = (sickLeave: unknown): SickLeave => {
+
+    if (isSickLeave(sickLeave)) {
+        return sickLeave;
+    } else {
+        throw new Error('Incorrect or missing discharge: ' + sickLeave);
     }
 
 };
@@ -67,12 +82,13 @@ const parseString = (input: unknown, inputTitle: string): string => {
 };
 
 const parseDiagnosisCodes = (object: unknown): Array<Diagnosis['code']> =>  {
-    if (!object || typeof object !== 'object' || !('diagnosisCodes' in object)) {
+
+    if (!object || typeof object !== 'object' || !('diagnosesCodes' in object)) {
       // we will just trust the data to be in correct form
       return [] as Array<Diagnosis['code']>;
     }
   
-    return object.diagnosisCodes as Array<Diagnosis['code']>;
+    return object.diagnosesCodes as Array<Diagnosis['code']>;
 };
 
 const parseHealthCheckRating = (rating: unknown): HealthCheckRating => {
@@ -129,7 +145,7 @@ const toNewEntryForPatient = (object: unknown): EntryWithoutId => {
             "date": parseDate(object.date),
             "description": parseString(object.description, "description"),
             "specialist": parseString(object.specialist, "specialist"),
-            "diagnosisCodes": 'diagnosesCodes' in object ? parseDiagnosisCodes(object.diagnosesCodes) : undefined
+            "diagnosisCodes": 'diagnosesCodes' in object ? parseDiagnosisCodes(object) : undefined
         };
 
         if (object.type === 'HealthCheck' && 'healthCheckRating' in object) {
@@ -149,6 +165,17 @@ const toNewEntryForPatient = (object: unknown): EntryWithoutId => {
             };
 
             return newHospitalEntry;
+
+        } else if (object.type === 'OccupationalHealthcare' && 'employerName' in object) {
+            const newHospitalEntry: EntryWithoutId = {
+                ...newEntry,
+                "type": object.type,
+                "employerName": parseString(object.employerName, "Employer name"),
+                "sickLeave": "sickLeave" in object ? parseSickLeave(object.sickLeave) : undefined,
+            };
+
+            return newHospitalEntry;
+            
         } else {
             throw new Error('Incorrect patient entry type or missing fields for specified type');
         }

@@ -28,6 +28,7 @@ router.post('/', (req, res) => {
 
 router.post('/:id/entries', (req, res) => {
     try {
+        console.log(req.body);
         const newEntryForPatient = toNewEntryForPatient(req.body);
         const addedEntry = patientService.addEntry(req.params.id, newEntryForPatient);
         res.json(addedEntry);

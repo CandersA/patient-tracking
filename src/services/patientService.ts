@@ -4,7 +4,6 @@ import {
     WithoutSsnPatient, 
     NewPatient,
     EntryWithoutId,
-    Entry
 } from '../types';
 import * as uuid from "uuid";
 
@@ -44,7 +43,7 @@ const addPatient = ( newPatient: NewPatient ): Patient => {
     return newPatientsEntry;
 };
 
-const addEntry = ( patientId: string, newEntry: EntryWithoutId): Entry => {
+const addEntry = ( patientId: string, newEntry: EntryWithoutId): Patient => {
     
     const patient = getPatient(patientId);
 
@@ -60,7 +59,7 @@ const addEntry = ( patientId: string, newEntry: EntryWithoutId): Entry => {
     const patientIndex = patientData.findIndex(p => p.id === patient.id);
     patientData[patientIndex] = patient;
 
-    return newEntryForPatient;
+    return patient;
 };
   
 export default {
